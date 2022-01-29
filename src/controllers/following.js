@@ -89,7 +89,7 @@ exports.getFollowers = async (req, res) => {
       },
     });
     res.status(200).send({
-      following: response,
+      followers: response,
     });
   } catch (error) {
     console.log(error);

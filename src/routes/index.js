@@ -11,6 +11,7 @@ const {
   editUser,
   deleteUser,
   editUserWithPhoto,
+  checkAuth,
 } = require('../controllers/users');
 const {
   addFollow,
@@ -46,6 +47,7 @@ router.post('/register', register);
 router.post('/login', login);
 router.get('/users', getAllUsers);
 router.get('/user/:id', getOneUser);
+router.get('/check-auth', auth, checkAuth);
 router.delete('/user:id', deleteUser);
 router.patch('/user', auth, editUser);
 router.patch('/user-img', auth, upload.single('media'), editUserWithPhoto);

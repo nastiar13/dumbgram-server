@@ -16,7 +16,9 @@ exports.postFeed = async (req, res) => {
         user_id: id,
         caption,
         public_id: result.public_id,
-        url: result.secure_url,
+        url:
+          'https://res.cloudinary.com/dtxnrrstp/image/upload/q_60:420,f_webp/' +
+          result.public_id,
       },
       {
         attributes: {
@@ -41,7 +43,7 @@ exports.getFeeds = async (req, res) => {
   try {
     const id = req.params.id;
     const response = await posts.findAll(
-      { where: { id } },
+      { where: { user_id: id } },
       {
         attributes: {
           exclude: ['password', 'createdAt', 'updatedAt'],

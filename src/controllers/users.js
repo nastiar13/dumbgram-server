@@ -105,16 +105,59 @@ exports.login = async (req, res) => {
       message: 'Login success',
       user: {
         id: response.id,
-        fullName: response.fullName,
+        username: response.username,
         email: response.email,
-        token_key: token,
+        name: response.name,
+        bio: response.description,
+        photo: response.profile_picture,
+        isOnline: response.isOnline,
       },
+      token: token,
     });
   } catch (error) {
     console.log(error);
     res.status(500).send({
       status: 'Failed',
       message: 'Server error',
+    });
+  }
+};
+exports.checkAuth = async (req, res) => {
+  try {
+    const id = req.user.id;
+
+    const response = await users.findOne({
+      where: {
+        id,
+      },
+      attributes: {
+        exclude: ['createdAt', 'updatedAt', 'password'],
+      },
+    });
+
+    if (!response) {
+      return res.status(404).send({
+        status: 'failed',
+      });
+    }
+
+    res.send({
+      status: 'success...',
+      user: {
+        id: response.id,
+        username: response.username,
+        email: response.email,
+        name: response.name,
+        bio: response.description,
+        photo: response.profile_picture,
+        is_online: response.is_online,
+      },
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({
+      status: 'failed',
+      message: 'Server Error',
     });
   }
 };
@@ -162,7 +205,15 @@ exports.editUser = async (req, res) => {
     const newData = await users.findOne({ where: { id } });
     console.log(req.user);
     res.status(200).send({
-      new_data: newData,
+      new_data: {
+        id: newData.id,
+        username: newData.username,
+        email: newData.email,
+        name: newData.name,
+        bio: newData.description,
+        photo: newData.profile_picture,
+        is_online: newData.is_online,
+      },
     });
   } catch (error) {
     console.log(error);
@@ -180,10 +231,11 @@ exports.editUserWithPhoto = async (req, res) => {
         id,
       },
     });
-    if (oldData.url) {
-      const urlArr = oldData.url.split('/');
+    if (oldData.profile_picture) {
+      const urlArr = oldData.profile_picture.split('/');
       const public_id = urlArr[7] + '/' + urlArr[8].split('.')[0];
       const destroy = await cloudinary.uploader.destroy(public_id);
+      console.log(destroy);
     }
     const upload = await cloudinary.uploader.upload(req.file.path, {
       folder: 'dumbgram-profile',
@@ -191,15 +243,24 @@ exports.editUserWithPhoto = async (req, res) => {
     const response = await users.update(
       {
         ...req.body,
-        public_id: upload.public_id,
-        url: upload.secure_url,
+        profile_picture:
+          'https://res.cloudinary.com/dtxnrrstp/image/upload/q_60:420,f_webp/' +
+          upload.public_id,
       },
       { where: { id } },
     );
     const newData = await users.findOne({ where: { id } });
     console.log(req.user);
     res.status(200).send({
-      new_data: newData,
+      new_data: {
+        id: newData.id,
+        username: newData.username,
+        email: newData.email,
+        name: newData.name,
+        bio: newData.description,
+        photo: newData.profile_picture,
+        is_online: newData.is_online,
+      },
     });
   } catch (error) {
     console.log(error);
