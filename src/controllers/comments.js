@@ -1,4 +1,4 @@
-const { comments } = require('../../models');
+const { comments, users } = require('../../models');
 
 exports.addComments = async (req, res) => {
   try {
@@ -34,6 +34,13 @@ exports.getComments = async (req, res) => {
       },
       attributes: {
         exclude: ['createdAt', 'updatedAt', 'posts_id'],
+      },
+      include: {
+        model: users,
+        as: 'user_comment',
+        attributes: {
+          exclude: ['password', 'createdAt', 'updatedAt'],
+        },
       },
     });
     res.status(200).send({

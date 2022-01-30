@@ -9,8 +9,8 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       comments.belongsTo(models.users, {
-        as: 'comment_user',
-        foreignKey: 'id',
+        as: 'user_comment',
+        foreignKey: 'user_id',
       }),
         comments.belongsTo(models.posts, {
           as: 'post',
