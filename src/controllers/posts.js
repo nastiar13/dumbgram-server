@@ -42,14 +42,21 @@ exports.postFeed = async (req, res) => {
 exports.getFeeds = async (req, res) => {
   try {
     const id = req.params.id;
-    const response = await posts.findAll(
-      { where: { user_id: id } },
-      {
+    const response = await posts.findAll({
+      where: {
+        user_id: id,
+      },
+      attributes: {
+        exclude: ['password', 'createdAt', 'updatedAt'],
+      },
+      include: {
+        model: users,
+        as: 'post_owner',
         attributes: {
           exclude: ['password', 'createdAt', 'updatedAt'],
         },
       },
-    );
+    });
 
     res.status(200).send({
       posts: response,
@@ -101,6 +108,16 @@ exports.getFeedsByFollowing = async (req, res) => {
     const response = await posts.findAll({
       where: {
         user_id: foll_user.map((a) => a.following_user_id),
+      },
+      attributes: {
+        exclude: ['password', 'createdAt', 'updatedAt'],
+      },
+      include: {
+        model: users,
+        as: 'post_owner',
+        attributes: {
+          exclude: ['password', 'createdAt', 'updatedAt'],
+        },
       },
     });
 

@@ -70,9 +70,67 @@ exports.getFollowing = async (req, res) => {
     });
   }
 };
+exports.getFollowingById = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const response = await followings.findAll({
+      where: {
+        user_id: id,
+      },
+      attributes: {
+        exclude: ['createdAt', 'updatedAt'],
+      },
+      include: {
+        model: users,
+        as: 'follow_to',
+        attributes: {
+          exclude: ['password', 'createdAt', 'updatedAt'],
+        },
+      },
+    });
+    res.status(200).send({
+      following: response,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({
+      status: 'Failed',
+      message: 'Server error',
+    });
+  }
+};
 exports.getFollowers = async (req, res) => {
   try {
     const id = req.user.id;
+    const response = await followings.findAll({
+      where: {
+        following_user_id: id,
+      },
+      attributes: {
+        exclude: ['createdAt', 'updatedAt'],
+      },
+      include: {
+        model: users,
+        as: 'user',
+        attributes: {
+          exclude: ['password', 'createdAt', 'updatedAt'],
+        },
+      },
+    });
+    res.status(200).send({
+      followers: response,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({
+      status: 'Failed',
+      message: 'Server error',
+    });
+  }
+};
+exports.getFollowersById = async (req, res) => {
+  try {
+    const id = req.params.id;
     const response = await followings.findAll({
       where: {
         following_user_id: id,

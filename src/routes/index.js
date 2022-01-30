@@ -18,6 +18,8 @@ const {
   unFollow,
   getFollowing,
   getFollowers,
+  getFollowingById,
+  getFollowersById,
 } = require('../controllers/following');
 const {
   postFeed,
@@ -56,7 +58,8 @@ router.patch('/user-img', auth, upload.single('media'), editUserWithPhoto);
 router.post('/follow/:id', auth, addFollow);
 router.delete('/follow/:id', auth, unFollow);
 router.get('/following', auth, getFollowing);
-router.get('/followers', auth, getFollowers);
+router.get('/following/:id', getFollowingById);
+router.get('/followers/:id', getFollowersById);
 
 // posts
 router.post('/feed', auth, upload.single('media'), postFeed);
