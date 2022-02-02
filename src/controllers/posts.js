@@ -1,4 +1,5 @@
-const { posts, users, followings, likes } = require('../../models');
+const { Op } = require('sequelize');
+const { posts, users, followings, likes, Sequelize } = require('../../models');
 const { use } = require('../routes');
 const cloudinary = require('../utils/cloudinary');
 
@@ -72,6 +73,37 @@ exports.getFeeds = async (req, res) => {
 exports.getAllFeeds = async (req, res) => {
   try {
     const response = await posts.findAll({
+      attributes: {
+        exclude: ['password', 'createdAt', 'updatedAt'],
+      },
+      include: {
+        model: users,
+        as: 'post_owner',
+        attributes: {
+          exclude: ['password', 'createdAt', 'updatedAt'],
+        },
+      },
+      order: Sequelize.literal('rand()'),
+      limit: 20,
+    });
+    res.status(200).send({
+      posts: response,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({
+      status: 'Failed',
+      message: 'Server error',
+    });
+  }
+};
+exports.getAllFeedsExceptMe = async (req, res) => {
+  try {
+    const id = req.user.id;
+    const response = await posts.findAll({
+      where: {
+        [Op.not]: [{ user_id: id }],
+      },
       attributes: {
         exclude: ['password', 'createdAt', 'updatedAt'],
       },

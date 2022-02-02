@@ -19,6 +19,27 @@ exports.likePost = async (req, res) => {
     });
   }
 };
+exports.isLike = async (req, res) => {
+  try {
+    const target_id = req.params.id;
+    const id = req.user.id;
+    const response = await likes.findOne({
+      where: {
+        user_id: id,
+        post_id: parseInt(target_id),
+      },
+    });
+    res.status(200).send({
+      response,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({
+      status: 'Failed',
+      message: 'Server error',
+    });
+  }
+};
 exports.unLike = async (req, res) => {
   try {
     const target_id = req.params.id;

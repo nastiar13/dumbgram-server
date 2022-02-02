@@ -27,11 +27,13 @@ const {
   getAllFeeds,
   getFeedsByFollowing,
   deleteFeeds,
+  getAllFeedsExceptMe,
 } = require('../controllers/posts');
 const {
   likePost,
   getUserWhoLikesPost,
   unLike,
+  isLike,
 } = require('../controllers/likes');
 const {
   addComments,
@@ -58,6 +60,7 @@ router.patch('/user-img', auth, upload.single('media'), editUserWithPhoto);
 router.post('/follow/:id', auth, addFollow);
 router.delete('/follow/:id', auth, unFollow);
 router.get('/following', auth, getFollowing);
+router.get('/followers', auth, getFollowers);
 router.get('/following/:id', getFollowingById);
 router.get('/followers/:id', getFollowersById);
 
@@ -65,12 +68,14 @@ router.get('/followers/:id', getFollowersById);
 router.post('/feed', auth, upload.single('media'), postFeed);
 router.get('/feeds/:id', auth, getFeeds);
 router.get('/feeds', auth, getAllFeeds);
+router.get('/feeds-except-me', auth, getAllFeedsExceptMe);
 router.get('/feeds-by-foll', auth, getFeedsByFollowing);
 router.delete('/feed/:id', deleteFeeds);
 // likes
 router.post('/like/:id', auth, likePost);
 router.delete('/like/:id', auth, unLike);
 router.get('/like/:id', getUserWhoLikesPost);
+router.get('/is-like/:id', auth, isLike);
 
 // comments
 router.post('/comment/:id', auth, addComments);
