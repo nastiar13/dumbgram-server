@@ -13,9 +13,7 @@ const io = new Server(server, {
 const cors = require('cors');
 const router = require('./src/routes');
 
-io.on('connect', (socket) => {
-  console.log(socket.id);
-});
+require('./src/socket')(io);
 
 app.use(express.json());
 app.use(cors());

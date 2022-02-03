@@ -20,6 +20,7 @@ const {
   getFollowers,
   getFollowingById,
   getFollowersById,
+  isFollow,
 } = require('../controllers/following');
 const {
   postFeed,
@@ -63,6 +64,7 @@ router.get('/following', auth, getFollowing);
 router.get('/followers', auth, getFollowers);
 router.get('/following/:id', getFollowingById);
 router.get('/followers/:id', getFollowersById);
+router.get('/is-follow/:id', auth, isFollow);
 
 // posts
 router.post('/feed', auth, upload.single('media'), postFeed);
@@ -84,6 +86,6 @@ router.delete('/comment/:id', deleteComments);
 
 // chats
 router.post('/chat/:id', auth, sendMessage);
-router.get('/inbox/:id', auth, getMessagesFromConv);
+router.get('/inbox/:id', getMessagesFromConv);
 router.get('/inboxs', auth, getUserConv);
 module.exports = router;

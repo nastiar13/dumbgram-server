@@ -1,4 +1,4 @@
-const { messages, conversations, users } = require('../../models');
+const { messages, conversations, users, sequelize } = require('../../models');
 const { Op } = require('sequelize');
 
 exports.sendMessage = async (req, res) => {
@@ -35,13 +35,17 @@ exports.sendMessage = async (req, res) => {
         to_user: target_id,
         message_body: req.body.message,
       });
+      await conversations.update(
+        { to_user: target_id, from_user: id },
+        { where: { id: conv.id } },
+      );
     }
     res.status(200).send({
       result,
     });
   } catch (error) {
     console.log(error);
-    res.send({
+    res.status(500).send({
       error,
     });
   }
@@ -94,6 +98,7 @@ exports.getUserConv = async (req, res) => {
           },
         },
       ],
+      order: [['updatedAt', 'ASC']],
     });
     res.status(200).send({
       inbox: response,

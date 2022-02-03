@@ -157,3 +157,26 @@ exports.getFollowersById = async (req, res) => {
     });
   }
 };
+
+exports.isFollow = async (req, res) => {
+  try {
+    const id = req.user.id;
+    const target_id = req.params.id;
+    console.log(id, target_id);
+    const response = await followings.findOne({
+      where: {
+        user_id: id,
+        following_user_id: target_id,
+      },
+      attributes: ['user_id', 'following_user_id'],
+    });
+    res.status(200).send({
+      response,
+    });
+  } catch (error) {
+    res.status(500).send({
+      status: 'Failed',
+      message: 'Server error',
+    });
+  }
+};
