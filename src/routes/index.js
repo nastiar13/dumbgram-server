@@ -45,6 +45,8 @@ const {
   sendMessage,
   getMessagesFromConv,
   getUserConv,
+  createConv,
+  getOneConv,
 } = require('../controllers/chats');
 
 // users
@@ -88,4 +90,6 @@ router.delete('/comment/:id', deleteComments);
 router.post('/chat/:id', auth, sendMessage);
 router.get('/inbox/:id', getMessagesFromConv);
 router.get('/inboxs', auth, getUserConv);
+router.get('/conv/:id', auth, getOneConv);
+router.post('/inboxs/:id', auth, createConv);
 module.exports = router;

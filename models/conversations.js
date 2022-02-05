@@ -15,6 +15,10 @@ module.exports = (sequelize, DataTypes) => {
         conversations.belongsTo(models.users, {
           as: 'to',
           foreignKey: 'to_user',
+        }),
+        conversations.hasMany(models.messages, {
+          as: 'messages',
+          foreignKey: 'conversation_id',
         });
     }
   }

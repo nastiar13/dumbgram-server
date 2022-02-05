@@ -1,5 +1,6 @@
 const { messages, conversations, users, sequelize } = require('../../models');
 const { Op } = require('sequelize');
+const { response } = require('express');
 
 exports.sendMessage = async (req, res) => {
   try {
@@ -108,5 +109,70 @@ exports.getUserConv = async (req, res) => {
     res.send({
       error,
     });
+  }
+};
+exports.getOneConv = async (req, res) => {
+  try {
+    const id = req.params.id;
+
+    const response = await conversations.findOne({
+      where: {
+        id,
+      },
+      include: [
+        {
+          model: users,
+          as: 'from',
+          attributes: {
+            exclude: ['password', 'createdAt', 'updatedAt'],
+          },
+        },
+        {
+          model: users,
+          as: 'to',
+          attributes: {
+            exclude: ['password', 'createdAt', 'updatedAt'],
+          },
+        },
+      ],
+    });
+
+    res.status(200).send({
+      conv: response,
+    });
+  } catch (error) {
+    console.log(error);
+    res.send({
+      error,
+    });
+  }
+};
+
+exports.createConv = async (req, res) => {
+  try {
+    const id = req.user.id;
+    const target_id = req.params.id;
+    let response;
+    const isDup = await conversations.findOne({
+      where: {
+        [Op.or]: [
+          { from_user: id, to_user: target_id },
+          { from_user: target_id, to_user: id },
+        ],
+      },
+    });
+    if (!isDup) {
+      response = await conversations.create({
+        from_user: id,
+        to_user: target_id,
+      });
+    }
+
+    res.status(200).send({
+      status: 'Success',
+      convId: response ? response.id : isDup.id,
+    });
+  } catch (error) {
+    res.status(500).send({ error });
   }
 };

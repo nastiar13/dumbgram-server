@@ -11,7 +11,11 @@ module.exports = (sequelize, DataTypes) => {
       messages.belongsTo(models.users, {
         as: 'creator',
         foreignKey: 'from_user',
-      });
+      }),
+        messages.belongsTo(models.conversations, {
+          as: 'conv',
+          foreignKey: 'conversation_id',
+        });
     }
   }
   messages.init(
