@@ -1,5 +1,11 @@
 const { Op } = require('sequelize');
-const { conversations, users, messages } = require('../../models');
+const {
+  conversations,
+  users,
+  messages,
+  comments,
+  posts,
+} = require('../../models');
 const jwt = require('jsonwebtoken');
 
 const connectedUser = {};
@@ -151,6 +157,34 @@ const socketIo = (io) => {
     //     console.log(error);
     //   }
     // });
+
+    socket.on('load notif', async () => {
+      try {
+        const myPosts = await posts.findAll({
+          where: {
+            user_id: id,
+          },
+        });
+        const notif = await comments.findAll({
+          where: {
+            posts_id: myPosts.map((post) => post.id),
+          },
+          include: {
+            model: users,
+            as: 'user_comment',
+            attributes: {
+              exclude: ['password', 'email', 'createdAt', 'updatedAt'],
+            },
+          },
+          order: [['createdAt', 'DESC']],
+          limit: 2,
+        });
+
+        socket.emit('notif', notif);
+      } catch (error) {
+        console.log(error);
+      }
+    });
     socket.on('disconnect', () => {
       console.log('disconnect ===================================');
     });
