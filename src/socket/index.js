@@ -22,7 +22,7 @@ const socketIo = (io) => {
         const { user_id } = payload;
         const response = await conversations.findAll({
           where: {
-            [Op.or]: [{ from_user: user_id }, { to_user: user_id }],
+            [Op.or]: [{ from_user: id }, { to_user: id }],
           },
           include: [
             {
@@ -39,9 +39,24 @@ const socketIo = (io) => {
                 exclude: ['password', 'createdAt', 'updatedAt'],
               },
             },
+            {
+              model: messages,
+              as: 'messages',
+              order: [['createdAt', 'DESC']],
+              limit: 1,
+            },
+            // {
+            //   model: messages,
+            //   as: 'unread',
+            //   order: [['createdAt', 'DESC']],
+            //   where: {
+            //     is_read: '0',
+            //   },
+            // },
           ],
           order: [['updatedAt', 'DESC']],
         });
+        console.log(response);
         socket.emit('conversations', response);
       } catch (error) {
         console.log(error);
@@ -113,6 +128,29 @@ const socketIo = (io) => {
         console.log(error);
       }
     });
+
+    // socket.on('message was readed', async (data) => {
+    //   try {
+    //     const { convId, target_id } = data;
+    //     const res = await messages.update(
+    //       {
+    //         is_read: '1',
+    //       },
+    //       {
+    //         where: {
+    //           [Op.and]: [
+    //             { conversation_id: convId },
+    //             { to_user: id },
+    //             { is_read: '0' },
+    //           ],
+    //         },
+    //       },
+    //     );
+    //     io.to(socket.id).to(connectedUser[target_id]).emit('message updated');
+    //   } catch (error) {
+    //     console.log(error);
+    //   }
+    // });
     socket.on('disconnect', () => {
       console.log('disconnect ===================================');
     });

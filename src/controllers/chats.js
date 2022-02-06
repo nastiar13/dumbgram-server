@@ -71,6 +71,7 @@ exports.getMessagesFromConv = async (req, res) => {
     });
   } catch (error) {
     console.log(error);
+
     res.send({
       error,
     });
@@ -106,6 +107,7 @@ exports.getUserConv = async (req, res) => {
     });
   } catch (error) {
     console.log(error);
+
     res.send({
       error,
     });

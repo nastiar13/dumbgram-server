@@ -20,6 +20,10 @@ module.exports = (sequelize, DataTypes) => {
           as: 'messages',
           foreignKey: 'conversation_id',
         });
+      conversations.hasMany(models.messages, {
+        as: 'unread',
+        foreignKey: 'conversation_id',
+      });
     }
   }
   conversations.init(
