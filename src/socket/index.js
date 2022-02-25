@@ -135,28 +135,28 @@ const socketIo = (io) => {
       }
     });
 
-    // socket.on('message was readed', async (data) => {
-    //   try {
-    //     const { convId, target_id } = data;
-    //     const res = await messages.update(
-    //       {
-    //         is_read: '1',
-    //       },
-    //       {
-    //         where: {
-    //           [Op.and]: [
-    //             { conversation_id: convId },
-    //             { to_user: id },
-    //             { is_read: '0' },
-    //           ],
-    //         },
-    //       },
-    //     );
-    //     io.to(socket.id).to(connectedUser[target_id]).emit('message updated');
-    //   } catch (error) {
-    //     console.log(error);
-    //   }
-    // });
+    socket.on('message was readed', async (data) => {
+      try {
+        const { convId, target_id } = data;
+        const res = await messages.update(
+          {
+            is_read: '1',
+          },
+          {
+            where: {
+              [Op.and]: [
+                { conversation_id: convId },
+                { to_user: id },
+                { is_read: '0' },
+              ],
+            },
+          },
+        );
+        io.to(socket.id).to(connectedUser[target_id]).emit('message updated');
+      } catch (error) {
+        console.log(error);
+      }
+    });
 
     socket.on('load notif', async () => {
       try {
