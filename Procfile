@@ -1,3 +1,3 @@
-Release: node_modules/.bin/sequelize db:migrate:undo:all; node_modules/.bin/sequelize db:migrate;
+Release: npx sequelize-cli db:migrate
 
-web: npx sequelize db:migrate && node index.js
+web: node index.js
