@@ -1,6 +1,5 @@
 const { Op } = require('sequelize');
 const { posts, users, followings, likes, Sequelize } = require('../../models');
-const { use } = require('../routes');
 const cloudinary = require('../utils/cloudinary');
 
 exports.postFeed = async (req, res) => {
@@ -84,7 +83,6 @@ exports.getAllFeeds = async (req, res) => {
         },
       },
       order: Sequelize.literal('rand()'),
-      limit: 20,
     });
     res.status(200).send({
       posts: response,
