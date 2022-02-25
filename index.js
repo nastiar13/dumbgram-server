@@ -20,4 +20,4 @@ app.use(cors());
 app.use(express.urlencoded({ extended: true }));
 app.use('/api/v1/', router);
 
-server.listen(5000);
+server.listen(process.env.PORT || 5000);
